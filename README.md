@@ -15,8 +15,14 @@ score=0
 font=pygame.font.SysFont('san',50)
 #game over
 font1=pygame.font.SysFont('san',50)
+#tao
+tao=pygame.image.load('img/15.png')
+
+#score_tao
+score_tao=0
+font4=pygame.font.SysFont('san',50)
 #bird
-x_bird=50
+x_bird=112
 y_bird=350
 bird_drop_velocity=0
 bird_gravity=0.3
@@ -24,9 +30,13 @@ bird_gravity=0.3
 tube1_x=400
 tube2_x=650
 tube3_x=850
-tube1_height=randint(200,300)
+tao_height=tube1_height=randint(200,300)
 tube2_height=randint(250,300)
 tube3_height=randint(150,250)
+#tao
+tao=pygame.image.load('img/15.png')
+tao_x= 400 +100
+tao_height=tube1_height+100
 #tube opposite
 tube1_op_height=randint(200,300)
 tube2_op_height=randint(250,300)
@@ -50,15 +60,23 @@ sound=pygame.mixer.Sound('img/no6.wav')
 tube1_pass=False 
 tube2_pass=False   
 tube3_pass=False   
+#kiem tra bird trung tao chua
+tao1_pass=False
 #kiem tra ct dung chua
 pausing=False             
 running=True
 while running:
+    
+    
     #mixer
+
     pygame.mixer.Sound.play(sound)
     clock.tick(60)
     screen.fill(WHITE)
     screen.blit(background_img,(0,0))
+    
+    
+
     #ep anh
     tube1_img=pygame.transform.scale(tube_img,(50,tube1_height))
     tube1=screen.blit(tube1_img,(tube1_x,0))
@@ -75,6 +93,17 @@ while running:
     
     tube3_op_img=pygame.transform.scale(tube_op_img,(50,600-d_2tube-tube3_height))
     tube3_op=screen.blit(tube3_op_img,(tube3_x,tube3_height+d_2tube))
+    #tao
+    tao_img=pygame.transform.scale(tao,(50,50))
+    tao1=screen.blit(tao_img,(tube1_x+100,(tube1_height+100)))
+    if tao_x<-50 :
+        tao_x=tube1_x+100             
+        tao_height= randint(100,400)  
+        tao1_pass=False
+    
+
+    
+
     #trong luc cua chim
     y_bird=y_bird+bird_drop_velocity
     bird_drop_velocity=bird_drop_velocity+bird_gravity
@@ -82,7 +111,9 @@ while running:
     bird=screen.blit(bird_img,(x_bird,y_bird))
     #ground
     ground=screen.blit(ground_image,(0,550))
-    
+    #ghi diem tao
+    tao_txt=font.render('APPLE:'+str(score_tao),True,RED)
+    screen.blit(tao_txt,(0,50))
     #ghi diem
     score_txt=font.render('Score:'+str(score),True,RED)
     screen.blit(score_txt,(5,5))
@@ -91,11 +122,11 @@ while running:
     tube2_x-=velocity
     tube3_x-=velocity
     if tube1_x<-50:
-        tube1_x=600
+        tube1_x=700
         tube1_height=randint(100,400)
         tube1_pass=False
     if tube2_x<-50:
-        tube2_x=650
+        tube2_x=700
         tube2_height=randint(100,400)
         tube2_pass=False
     if tube3_x<-50:
@@ -113,10 +144,18 @@ while running:
     if tube3_x+50<=x_bird and tube3_pass==False:   
         score+=1
         tube3_pass=True
+    # kiem tra bird trung tao chua
+    
+    if bird.colliderect(tao1) and tao1_pass==False:
+        score_tao+=1 
+        tao1_pass=True 
+          
     # kiem tra va cham
     tubes=[tube1,tube2,tube3,tube1_op,tube2_op,tube3_op]
     for tube in tubes:
         if bird.colliderect(tube):
+            
+
             #mixer
             pygame.mixer.pause()
             #velocity
@@ -157,10 +196,15 @@ while running:
                     tube3_x=850
                     velocity=2
                     score=0
+                    if score_tao<0:
+                        score_tao=0
+                    if score_tao>0:
+                        score_tao-=1
+                
                     pausing=False
                     #mixer
                     pygame.mixer.unpause()
                
     pygame.display.flip()
 
-pygame.quit()        
+pygame.quit()    
