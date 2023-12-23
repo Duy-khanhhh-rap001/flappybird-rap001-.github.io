@@ -61,8 +61,8 @@ RED=(255,0,0)
 velocity=2       
 ground_scroll=0  
 #sound
-sound=pygame.mixer.Sound('img/y2meta.com - HOUSE LAK 2024 - VIET DEEP NHẠC GIÁNG SINH NOEL REMIX MỚI NHẤT 2024 - MERRY CHRISTMAS REMIX 2024 (128 kbps) (mp3cut.net).mp3')
-sound_ting=pygame.mixer.Sound('img/ting.mp3')
+sound=pygame.mixer.Sound('sound/y2meta.com - HOUSE LAK 2024 - VIET DEEP NHẠC GIÁNG SINH NOEL REMIX MỚI NHẤT 2024 - MERRY CHRISTMAS REMIX 2024 (128 kbps) (mp3cut.net).mp3')
+
 #kiem tra chim qua ong chua
 tube1_pass=False 
 tube2_pass=False   
