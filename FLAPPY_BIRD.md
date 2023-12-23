@@ -12,16 +12,21 @@ background_img=pygame.image.load('img/bg.png')
 background_img=pygame.transform.scale(background_img,(800,700))
 #scrore
 score=0
-font=pygame.font.SysFont('san',50)
+font=pygame.font.SysFont('Bauhaus 93', 40)   
 #game over
-font1=pygame.font.SysFont('san',50)
+font1=pygame.font.SysFont('Bauhaus 93', 40)
 #tao
 tao=pygame.image.load('img/15.png')
-
+#restart
+restart=pygame.image.load('img/restart.png')
 #score_tao
 score_tao=0
-font4=pygame.font.SysFont('san',50)
+font4=pygame.font.SysFont('Bauhaus 93', 60)
 #bird
+x=140
+y=x+30
+
+
 x_bird=112
 y_bird=350
 bird_drop_velocity=0
@@ -45,6 +50,7 @@ tube3_op_height=randint(150,250)
 ground_image=pygame.image.load('img/ground.png')
 tube_img=pygame.image.load('img/pipe1.jpg')
 tube_op_img=pygame.image.load('img/pipe.png')
+#d2 tube
 d_2tube=150
 #bird img
 bird_img=pygame.image.load('img/bird1.png')
@@ -55,13 +61,16 @@ RED=(255,0,0)
 velocity=2       
 ground_scroll=0  
 #sound
-sound=pygame.mixer.Sound('img/no6.wav')
+sound=pygame.mixer.Sound('img/y2meta.com - HOUSE LAK 2024 - VIET DEEP NHẠC GIÁNG SINH NOEL REMIX MỚI NHẤT 2024 - MERRY CHRISTMAS REMIX 2024 (128 kbps) (mp3cut.net).mp3')
+sound_ting=pygame.mixer.Sound('img/ting.mp3')
 #kiem tra chim qua ong chua
 tube1_pass=False 
 tube2_pass=False   
 tube3_pass=False   
 #kiem tra bird trung tao chua
 tao1_pass=False
+tao_x=tube1_x+100
+tao_y=tube1_height+100
 #kiem tra ct dung chua
 pausing=False             
 running=True
@@ -69,12 +78,14 @@ while running:
     
     
     #mixer
-
+    
     pygame.mixer.Sound.play(sound)
     clock.tick(60)
     screen.fill(WHITE)
     screen.blit(background_img,(0,0))
-    
+    # restart
+    restart_img=pygame.transform.scale(restart,(150,70))
+
     
 
     #ep anh
@@ -95,11 +106,29 @@ while running:
     tube3_op=screen.blit(tube3_op_img,(tube3_x,tube3_height+d_2tube))
     #tao
     tao_img=pygame.transform.scale(tao,(50,50))
-    tao1=screen.blit(tao_img,(tube1_x+100,(tube1_height+100)))
-    if tao_x<-50 :
-        tao_x=tube1_x+100             
-        tao_height= randint(100,400)  
-        tao1_pass=False
+    tao1=screen.blit(tao_img,(tao_x,tao_y))
+    if score_tao>=1:
+        screen.blit(tao_img,(140,45))
+    if score_tao>=2:
+        screen.blit(tao_img,(170,45))
+    if score_tao>=3:
+        screen.blit(tao_img,(200,45))
+    if score_tao>=4:
+        screen.blit(tao_img,(230,45))
+    if score_tao>=5:
+        screen.blit(tao_img,(260,45))
+    if score_tao>=6:
+        screen.blit(tao_img,(290,45))
+    if score_tao>=7:
+        screen.blit(tao_img,(320,45))
+    if score_tao>=8:
+        screen.blit(tao_img,(340,45))
+
+            
+    
+    
+        
+    
     
 
     
@@ -112,8 +141,8 @@ while running:
     #ground
     ground=screen.blit(ground_image,(0,550))
     #ghi diem tao
-    tao_txt=font.render('APPLE:'+str(score_tao),True,RED)
-    screen.blit(tao_txt,(0,50))
+    tao_txt=font.render('APPLE:',True,RED)
+    screen.blit(tao_txt,(20,50))
     #ghi diem
     score_txt=font.render('Score:'+str(score),True,RED)
     screen.blit(score_txt,(5,5))
@@ -121,6 +150,7 @@ while running:
     tube1_x-=velocity
     tube2_x-=velocity
     tube3_x-=velocity
+    tao_x-=velocity
     if tube1_x<-50:
         tube1_x=700
         tube1_height=randint(100,400)
@@ -133,6 +163,12 @@ while running:
         tube3_x=700
         tube3_height=randint(100,400)
         tube3_pass=False
+    
+    
+    if tao_x<-50:
+        tao_x=700+100
+        tao_y=tube1_height+100
+        tao1_pass=False
     #kiem tra chim qua pipe chua
     if tube1_x+50<=x_bird and tube1_pass==False:   
         score+=1
@@ -144,38 +180,47 @@ while running:
     if tube3_x+50<=x_bird and tube3_pass==False:   
         score+=1
         tube3_pass=True
+
     # kiem tra bird trung tao chua
     
     if bird.colliderect(tao1) and tao1_pass==False:
-        score_tao+=1 
+        tao_x=-50
+         
+        score_tao+=1
+      
+         
         tao1_pass=True 
+        
           
     # kiem tra va cham
     tubes=[tube1,tube2,tube3,tube1_op,tube2_op,tube3_op]
     for tube in tubes:
         if bird.colliderect(tube):
             
-
+            
             #mixer
             pygame.mixer.pause()
+            
             #velocity
             velocity=0
             bird_drop_velocity=0  
             game_over_txt=font1.render('Game Over, Score:'+str(score),True,RED)
-            screen.blit(game_over_txt,(270,260))
+            screen.blit(game_over_txt,(250,260))
             space_txt=font.render("Press Space to continue!",True,RED)
-            screen.blit(space_txt,(230,300))
+            screen.blit(space_txt,(200,300))
+            screen.blit(restart_img,(320,350))
             #kiem tra pausing
             pausing=True
-    if y_bird>=600 or y_bird<=0:
+    if y_bird>=550 or y_bird<=0:
         #mixer
             pygame.mixer.pause()
             velocity=0
             bird_drop_velocity=0  
             game_over_txt=font1.render('Game Over, Score:'+str(score),True,RED)
-            screen.blit(game_over_txt,(270,260))
+            screen.blit(game_over_txt,(250,260))
             space_txt=font.render("Press Space to continue!",True,RED)
-            screen.blit(space_txt,(230,300))
+            screen.blit(space_txt,(200,300))
+            screen.blit(restart_img,(320,350))
             #kiem tra pausing
             pausing=True
 
@@ -187,6 +232,7 @@ while running:
             if event.key==pygame.K_SPACE:
                 bird_drop_velocity=0
                 bird_drop_velocity-=7
+                
                 if pausing:
                     #reset lai
                     x_bird=50
@@ -195,16 +241,20 @@ while running:
                     tube2_x=600
                     tube3_x=850
                     velocity=2
-                    score=0
+                    if score_tao<=0:
+                        score=0
                     if score_tao<0:
                         score_tao=0
+                        score=0
                     if score_tao>0:
                         score_tao-=1
-                
+                    screen.blit(restart_img,(320,350))
                     pausing=False
                     #mixer
                     pygame.mixer.unpause()
+     
+        
                
     pygame.display.flip()
 
-pygame.quit()    
+pygame.quit()        
